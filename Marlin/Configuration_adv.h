@@ -1323,13 +1323,8 @@
 #endif
 
 #if EITHER(HAS_DISPLAY, DWIN_LCD_PROUI)
-<<<<<<< HEAD
   // The timeout (in ms) to return to the status screen from sub-menus
   #define LCD_TIMEOUT_TO_STATUS 15000
-=======
-  // The timeout to return to the status screen from sub-menus
-  //#define LCD_TIMEOUT_TO_STATUS 15000   // (ms)
->>>>>>> upstream/bugfix-2.0.x
 
   #if ENABLED(SHOW_BOOTSCREEN)
     #define BOOTSCREEN_TIMEOUT 4000       // (ms) Total Duration to display the boot screen(s)
@@ -4000,20 +3995,6 @@
 #endif
 
 /**
-<<<<<<< HEAD
-=======
- * Instant freeze / unfreeze functionality
- * Specified pin has pullup and connecting to ground will instantly pause motion.
- * Potentially useful for emergency stop that allows being resumed.
- */
-//#define FREEZE_FEATURE
-#if ENABLED(FREEZE_FEATURE)
-  //#define FREEZE_PIN 41   // Override the default (KILL) pin here
-  #define FREEZE_STATE LOW  // State of pin indicating freeze
-#endif
-
-/**
->>>>>>> upstream/bugfix-2.0.x
  * MAX7219 Debug Matrix
  *
  * Add support for a low-cost 8x8 LED Matrix based on the Max7219 chip as a realtime status display.
