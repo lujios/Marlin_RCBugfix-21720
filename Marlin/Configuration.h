@@ -52,7 +52,7 @@
  *
  * Advanced settings can be found in Configuration_adv.h
  */
-#define CONFIGURATION_H_VERSION 02000903
+#define CONFIGURATION_H_VERSION 02010000
 
 //===========================================================================
 //============================= Getting Started =============================
@@ -535,10 +535,12 @@
 //===========================================================================
 //============================= PID Settings ================================
 //===========================================================================
-// PID Tuning Guide here: https://reprap.org/wiki/PID_Tuning
 
-// Comment the following line to disable PID and enable bang-bang.
-#define PIDTEMP
+// Enable PIDTEMP for PID control or MPCTEMP for Predictive Model.
+// temperature control. Disable both for bang-bang heating.
+#define PIDTEMP          // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
+//#define MPCTEMP        // ** EXPERIMENTAL **
+
 #define BANG_MAX 255     // Limits current to nozzle while in bang-bang mode; 255=full current
 #define PID_MAX BANG_MAX // Limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
 #define PID_K1 0.95      // Smoothing factor within any PID loop
@@ -561,7 +563,45 @@
     #define DEFAULT_Ki   2.32    //Luj
     #define DEFAULT_Kd  66.76    //Luj
   #endif
-#endif // PIDTEMP
+#endif
+
+/**
+ * Model Predictive Control for hotend
+ *
+ * Use a physical model of the hotend to control temperature. When configured correctly
+ * this gives better responsiveness and stability than PID and it also removes the need
+ * for PID_EXTRUSION_SCALING and PID_FAN_SCALING. Use M306 to autotune the model.
+ */
+#if ENABLED(MPCTEMP)
+  #define MPC_MAX BANG_MAX                            // (0..255) Current to nozzle while MPC is active.
+  #define MPC_HEATER_POWER { 40.0f }                  // (W) Heat cartridge powers.
+
+  #define MPC_INCLUDE_FAN                             // Model the fan speed?
+
+  // Measured physical constants from M306
+  #define MPC_BLOCK_HEAT_CAPACITY { 16.7f }           // (J/K) Heat block heat capacities.
+  #define MPC_SENSOR_RESPONSIVENESS { 0.22f }         // (K/s per ∆K) Rate of change of sensor temperature from heat block.
+  #define MPC_AMBIENT_XFER_COEFF { 0.068f }           // (W/K) Heat transfer coefficients from heat block to room air with fan off.
+  #if ENABLED(MPC_INCLUDE_FAN)
+    #define MPC_AMBIENT_XFER_COEFF_FAN255 { 0.097f }  // (W/K) Heat transfer coefficients from heat block to room air with fan on full.
+  #endif
+
+  // For one fan and multiple hotends MPC needs to know how to apply the fan cooling effect.
+  #if ENABLED(MPC_INCLUDE_FAN)
+    //#define MPC_FAN_0_ALL_HOTENDS
+    //#define MPC_FAN_0_ACTIVE_HOTEND
+  #endif
+
+  #define FILAMENT_HEAT_CAPACITY_PERMM 5.6e-3f        // 0.0056 J/K/mm for 1.75mm PLA (0.0149 J/K/mm for 2.85mm PLA).
+  //#define FILAMENT_HEAT_CAPACITY_PERMM 3.6e-3f      // 0.0036 J/K/mm for 1.75mm PETG (0.0094 J/K/mm for 2.85mm PETG).
+
+  // Advanced options
+  #define MPC_SMOOTHING_FACTOR 0.5f                   // (0.0...1.0) Noisy temperature sensors may need a lower value for stabilization.
+  #define MPC_MIN_AMBIENT_CHANGE 1.0f                 // (K/s) Modeled ambient temperature rate of change, when correcting model inaccuracies.
+  #define MPC_STEADYSTATE 0.5f                        // (K/s) Temperature change rate for steady state logic to be enforced.
+
+  #define MPC_TUNING_POS { X_CENTER, Y_CENTER, 1.0f } // (mm) M306 Autotuning position, ideally bed center just above the surface.
+#endif
 
 //===========================================================================
 //====================== PID > Bed Temperature Control ======================
@@ -831,6 +871,9 @@
 //#define USE_IMAX_PLUG
 //#define USE_JMAX_PLUG
 //#define USE_KMAX_PLUG
+//#define USE_UMAX_PLUG
+//#define USE_VMAX_PLUG
+//#define USE_WMAX_PLUG
 
 // Enable pullup for all endstops to prevent a floating state
 #define ENDSTOPPULLUPS
@@ -842,12 +885,18 @@
   //#define ENDSTOPPULLUP_IMIN
   //#define ENDSTOPPULLUP_JMIN
   //#define ENDSTOPPULLUP_KMIN
+  //#define ENDSTOPPULLUP_UMIN
+  //#define ENDSTOPPULLUP_VMIN
+  //#define ENDSTOPPULLUP_WMIN
   //#define ENDSTOPPULLUP_XMAX
   //#define ENDSTOPPULLUP_YMAX
   //#define ENDSTOPPULLUP_ZMAX
   //#define ENDSTOPPULLUP_IMAX
   //#define ENDSTOPPULLUP_JMAX
   //#define ENDSTOPPULLUP_KMAX
+  //#define ENDSTOPPULLUP_UMAX
+  //#define ENDSTOPPULLUP_VMAX
+  //#define ENDSTOPPULLUP_WMAX
   //#define ENDSTOPPULLUP_ZMIN_PROBE
 #endif
 
@@ -861,12 +910,18 @@
   //#define ENDSTOPPULLDOWN_IMIN
   //#define ENDSTOPPULLDOWN_JMIN
   //#define ENDSTOPPULLDOWN_KMIN
+  //#define ENDSTOPPULLDOWN_UMIN
+  //#define ENDSTOPPULLDOWN_VMIN
+  //#define ENDSTOPPULLDOWN_WMIN
   //#define ENDSTOPPULLDOWN_XMAX
   //#define ENDSTOPPULLDOWN_YMAX
   //#define ENDSTOPPULLDOWN_ZMAX
   //#define ENDSTOPPULLDOWN_IMAX
   //#define ENDSTOPPULLDOWN_JMAX
   //#define ENDSTOPPULLDOWN_KMAX
+  //#define ENDSTOPPULLDOWN_UMAX
+  //#define ENDSTOPPULLDOWN_VMAX
+  //#define ENDSTOPPULLDOWN_WMAX
   //#define ENDSTOPPULLDOWN_ZMIN_PROBE
 #endif
 
@@ -968,9 +1023,9 @@
 #define DISTINCT_E_FACTORS
 
 /**
- * Default Axis Steps Per Unit (steps/mm)
+ * Default Axis Steps Per Unit (linear=steps/mm, rotational=steps/°)
  * Override with M92
- *                                      X, Y, Z, E0 [, E1[, E2...]]
+ *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
 // variables to calculate steps
 #define XYZ_FULL_STEPS_PER_ROTATION 200
@@ -983,9 +1038,9 @@
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   { DEFAULT_XYZ_STEPS_PER_UNIT, DEFAULT_XYZ_STEPS_PER_UNIT, DEFAULT_XYZ_STEPS_PER_UNIT, 96, 96 }  // default steps per unit for Kossel (GT2, 20 tooth)
 #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80.436, 80.296, 80.39, 409.56, 404.68 }  //Luj
 /**
- * Default Max Feed Rate (mm/s)
+ * Default Max Feed Rate (linear=mm/s, rotational=°/s)
  * Override with M203
- *                                      X, Y, Z, E0 [, E1[, E2...]]
+ *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
 #define DEFAULT_MAX_FEEDRATE          { 500, 500, 500, 200, 200 }		//Luj
 
@@ -995,10 +1050,10 @@
 #endif
 
 /**
- * Default Max Acceleration (change/s) change = mm/s
+ * Default Max Acceleration (speed change with time) (linear=mm/(s^2), rotational=°/(s^2))
  * (Maximum start speed for accelerated moves)
  * Override with M201
- *                                      X, Y, Z, E0 [, E1[, E2...]]
+ *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
 #define DEFAULT_MAX_ACCELERATION       { 3000, 3000, 3000, 3000, 3000 }  //Luj
 
@@ -1008,7 +1063,7 @@
 #endif
 
 /**
- * Default Acceleration (change/s) change = mm/s
+ * Default Acceleration (speed change with time) (linear=mm/(s^2), rotational=°/(s^2))
  * Override with M204
  *
  *   M204 P    Acceleration
@@ -1021,7 +1076,7 @@
 
 /**
  * Default Jerk limits (mm/s)
- * Override with M205 X Y Z E
+ * Override with M205 X Y Z . . . E
  *
  * "Jerk" specifies the minimum speed change that requires acceleration.
  * When changing speed and direction, if the difference is less than the
@@ -1035,6 +1090,9 @@
   //#define DEFAULT_IJERK  0.3
   //#define DEFAULT_JJERK  0.3
   //#define DEFAULT_KJERK  0.3
+  //#define DEFAULT_UJERK  0.3
+  //#define DEFAULT_VJERK  0.3
+  //#define DEFAULT_WJERK  0.3
 
   //#define TRAVEL_EXTRA_XYJERK 0.0     // Additional jerk allowance for all travel moves
 
@@ -1409,12 +1467,24 @@
 #define Y_ENABLE_ON 0
 #define Z_ENABLE_ON 0
 #define E_ENABLE_ON 0 // For all extruders
+//#define I_ENABLE_ON 0
+//#define J_ENABLE_ON 0
+//#define K_ENABLE_ON 0
+//#define U_ENABLE_ON 0
+//#define V_ENABLE_ON 0
+//#define W_ENABLE_ON 0
 
 // Disable axis steppers immediately when they're not being stepped.
 // WARNING: When motors turn off there is a chance of losing position accuracy!
 #define DISABLE_X false
 #define DISABLE_Y false
 #define DISABLE_Z false
+//#define DISABLE_I false
+//#define DISABLE_J false
+//#define DISABLE_K false
+//#define DISABLE_U false
+//#define DISABLE_V false
+//#define DISABLE_W false
 
 // Turn off the display blinking that warns about possible accuracy reduction
 //#define DISABLE_REDUCED_ACCURACY_WARNING
@@ -1430,6 +1500,12 @@
 #define INVERT_X_DIR false //Luj Hay que invertir para TMC2209. Con 4988 era true
 #define INVERT_Y_DIR false
 #define INVERT_Z_DIR false
+//#define INVERT_I_DIR false
+//#define INVERT_J_DIR false
+//#define INVERT_K_DIR false
+//#define INVERT_U_DIR false
+//#define INVERT_V_DIR false
+//#define INVERT_W_DIR false
 
 // @section extruder
 
@@ -1468,6 +1544,9 @@
 //#define I_HOME_DIR -1
 //#define J_HOME_DIR -1
 //#define K_HOME_DIR -1
+//#define U_HOME_DIR -1
+//#define V_HOME_DIR -1
+//#define W_HOME_DIR -1
 
 // @section machine
 
@@ -1488,6 +1567,12 @@
 //#define J_MAX_POS 50
 //#define K_MIN_POS 0
 //#define K_MAX_POS 50
+//#define U_MIN_POS 0
+//#define U_MAX_POS 50
+//#define V_MIN_POS 0
+//#define V_MAX_POS 50
+//#define W_MIN_POS 0
+//#define W_MAX_POS 50
 
 /**
  * Software Endstops
@@ -1834,6 +1919,9 @@
 //#define MANUAL_I_HOME_POS 0
 //#define MANUAL_J_HOME_POS 0
 //#define MANUAL_K_HOME_POS 0
+//#define MANUAL_U_HOME_POS 0
+//#define MANUAL_V_HOME_POS 0
+//#define MANUAL_W_HOME_POS 0
 
 /**
  * Use "Z Safe Homing" to avoid homing with a Z probe outside the bed area.
