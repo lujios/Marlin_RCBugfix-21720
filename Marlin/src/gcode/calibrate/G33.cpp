@@ -479,7 +479,7 @@ void GcodeSuite::G33() {
 
   if (!_0p_calibration) ac_home();
 
-  #if ENABLED(SENSORLESS_PROBING)           
+  #if HAS_DELTA_SENSORLESS_PROBING           
     if (verbose_level > 0 && save_offset_sensorless_adj) {                  //Lujsensorless Guardar save_offset_sensorless
       xyz_pos_t reset{0};                     
       offset_sensorless_adj = reset;          
@@ -628,7 +628,7 @@ void GcodeSuite::G33() {
 
     if (verbose_level == 3 || verbose_level == 0) {
       print_calibration_results(z_at_pt, _tower_results, _opposite_results);
-      #if ENABLED(SENSORLESS_PROBING)
+      #if HAS_DELTA_SENSORLESS_PROBING
         if (verbose_level == 0 && probe_points == 1) probe.save_offset_sensorless(save_offset_sensorless_adj, z_at_pt[CEN]);  //Lujsensorless
       #endif
     }
