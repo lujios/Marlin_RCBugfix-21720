@@ -413,8 +413,8 @@ void GcodeSuite::G33() {
     dcr -= probe_at_offset ? _MAX(total_offset, PROBING_MARGIN) : total_offset;
   #endif
   NOMORE(dcr, DELTA_PRINTABLE_RADIUS);
-  dcr *= sensorless_radius_factor;                    //Lujsensorless sensorless_radius_factor provisional solo pruebas. Factor radius.
   if (parser.seenval('R')) dcr -= _MAX(parser.value_float(),0);
+  dcr *= sensorless_radius_factor;                    //Lujsensorless sensorless_radius_factor provisional solo pruebas. Factor radius.  
 
   const float calibration_precision = parser.floatval('C', 0.0f);
   if (calibration_precision < 0) {
