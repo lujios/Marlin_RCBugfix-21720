@@ -23,7 +23,6 @@
 
 /**
  * Arduino Mega with RAMPS v1.4 (or v1.3) pin assignments
- * ATmega2560, ATmega1280
  *
  * Applies to the following boards:
  *
@@ -109,26 +108,26 @@
 //
 #ifndef X_STOP_PIN
   #ifndef X_MIN_PIN
-    #define X_MIN_PIN                          3
+  #define X_MIN_PIN                            2 //3  //Lujpins  Debe coincidir con _MAX_PIN al activar SENSORLESS_PROBING 
   #endif
   #ifndef X_MAX_PIN
-    #define X_MAX_PIN                          2
+    #define X_MAX_PIN                          2      //Lujpins  Asociado a diag1 stepper X al activar SENSORLESS_HOMING
   #endif
 #endif
 #ifndef Y_STOP_PIN
   #ifndef Y_MIN_PIN
-    #define Y_MIN_PIN                         14
+  #define Y_MIN_PIN                            3 //14 //Lujpins  Debe coincidir con _MAX_PIN al activar SENSORLESS_PROBING  
   #endif
   #ifndef Y_MAX_PIN
-    #define Y_MAX_PIN                         15
+    #define Y_MAX_PIN                          3 //15 //Lujpins  Asociado a diag1 stepper X al activar SENSORLESS_HOMING
   #endif
 #endif
 #ifndef Z_STOP_PIN
   #ifndef Z_MIN_PIN
-    #define Z_MIN_PIN                         18
+    #define Z_MIN_PIN                         19      //Lujpins  Debe coincidir con _MAX_PIN al activar SENSORLESS_PROBING  
   #endif
   #ifndef Z_MAX_PIN
-    #define Z_MAX_PIN                         19
+    #define Z_MAX_PIN                         19      //Lujpins  Asociado a diag1 stepper X al activar SENSORLESS_HOMING
   #endif
 #endif
 
@@ -259,13 +258,13 @@
 
 #ifndef FAN0_PIN
   #if EITHER(FET_ORDER_EFB, FET_ORDER_EFF)        // Hotend, Fan, Bed or Hotend, Fan, Fan
-    #define FAN0_PIN                MOSFET_B_PIN
+    #define FAN0_PIN                 MOSFET_B_PIN
   #elif EITHER(FET_ORDER_EEF, FET_ORDER_SF)       // Hotend, Hotend, Fan or Spindle, Fan
-    #define FAN0_PIN                MOSFET_C_PIN
+    #define FAN0_PIN                 MOSFET_C_PIN
   #elif FET_ORDER_EEB                             // Hotend, Hotend, Bed
-    #define FAN0_PIN                           4  // IO pin. Buffer needed
+    #define FAN0_PIN                            4  // IO pin. Buffer needed
   #else                                           // Non-specific are "EFB" (i.e., "EFBF" or "EFBE")
-    #define FAN0_PIN                MOSFET_B_PIN
+    #define FAN0_PIN                 MOSFET_B_PIN
   #endif
 #endif
 
@@ -320,14 +319,16 @@
 //
 // TMC software SPI
 //
-#ifndef TMC_SPI_MOSI
-  #define TMC_SPI_MOSI                        66
-#endif
-#ifndef TMC_SPI_MISO
-  #define TMC_SPI_MISO                        44
-#endif
-#ifndef TMC_SPI_SCK
-  #define TMC_SPI_SCK                         64
+#if ENABLED(TMC_USE_SW_SPI)
+  #ifndef TMC_SW_MOSI
+    #define TMC_SW_MOSI                       66
+  #endif
+  #ifndef TMC_SW_MISO
+    #define TMC_SW_MISO                       44
+  #endif
+  #ifndef TMC_SW_SCK
+    #define TMC_SW_SCK                        64
+  #endif
 #endif
 
 #if HAS_TMC_UART
@@ -340,11 +341,11 @@
    * Serial2 -- AUX-4 Pin 18 (D16 TX2) and AUX-4 Pin 17 (D17 RX2)
    * Serial1 -- Pins D18 and D19 are used for Z-MIN and Z-MAX
    */
-  //#define X_HARDWARE_SERIAL Serial1
+  #define X_HARDWARE_SERIAL Serial3
   //#define X2_HARDWARE_SERIAL Serial1
-  //#define Y_HARDWARE_SERIAL Serial1
+  #define Y_HARDWARE_SERIAL Serial3
   //#define Y2_HARDWARE_SERIAL Serial1
-  //#define Z_HARDWARE_SERIAL Serial1
+  #define Z_HARDWARE_SERIAL Serial3
   //#define Z2_HARDWARE_SERIAL Serial1
   //#define E0_HARDWARE_SERIAL Serial1
   //#define E1_HARDWARE_SERIAL Serial1
@@ -353,10 +354,12 @@
   //#define E4_HARDWARE_SERIAL Serial1
 
   #ifndef X_SERIAL_TX_PIN
-    #define X_SERIAL_TX_PIN                   40
+    //#define X_SERIAL_TX_PIN                   40   //Lujpins
+    #define X_SERIAL_TX_PIN                   14   //Lujpins
   #endif
   #ifndef X_SERIAL_RX_PIN
-    #define X_SERIAL_RX_PIN                   63
+    //#define X_SERIAL_RX_PIN                   63   //Lujpins   
+    #define X_SERIAL_RX_PIN                   15   //   
   #endif
   #ifndef X2_SERIAL_TX_PIN
     #define X2_SERIAL_TX_PIN                  -1
@@ -366,10 +369,12 @@
   #endif
 
   #ifndef Y_SERIAL_TX_PIN
-    #define Y_SERIAL_TX_PIN                   59
+    //#define Y_SERIAL_TX_PIN                   59  //Lujpins
+    #define Y_SERIAL_TX_PIN                   14  //
   #endif
   #ifndef Y_SERIAL_RX_PIN
-    #define Y_SERIAL_RX_PIN                   64
+    //#define Y_SERIAL_RX_PIN                   64  //Lujpins
+    #define Y_SERIAL_RX_PIN                   15  //
   #endif
   #ifndef Y2_SERIAL_TX_PIN
     #define Y2_SERIAL_TX_PIN                  -1
@@ -379,10 +384,12 @@
   #endif
 
   #ifndef Z_SERIAL_TX_PIN
-    #define Z_SERIAL_TX_PIN                   42
+    //#define Z_SERIAL_TX_PIN                   42  //Lujpins
+    #define Z_SERIAL_TX_PIN                   14
   #endif
   #ifndef Z_SERIAL_RX_PIN
-    #define Z_SERIAL_RX_PIN                   65
+    //#define Z_SERIAL_RX_PIN                   65  //Lujpins
+    #define Z_SERIAL_RX_PIN                   15
   #endif
   #ifndef Z2_SERIAL_TX_PIN
     #define Z2_SERIAL_TX_PIN                  -1
@@ -392,10 +399,12 @@
   #endif
 
   #ifndef E0_SERIAL_TX_PIN
-    #define E0_SERIAL_TX_PIN                  44
+    #define E0_SERIAL_TX_PIN                  44  //LUj
+    //#define E0_SERIAL_TX_PIN                  14 //44  LUj    
   #endif
   #ifndef E0_SERIAL_RX_PIN
-    #define E0_SERIAL_RX_PIN                  66
+    #define E0_SERIAL_RX_PIN                  66  //Luj
+    //#define E0_SERIAL_RX_PIN                  15 //66  Luj    
   #endif
   #ifndef E1_SERIAL_TX_PIN
     #define E1_SERIAL_TX_PIN                  -1
@@ -439,6 +448,8 @@
   #ifndef E7_SERIAL_RX_PIN
     #define E7_SERIAL_RX_PIN                  -1
   #endif
+  // Reduce baud rate to improve software serial reliability    //LujTMC2209   copiado de pins_BTT_SKR_V1_4.h
+  #define TMC_BAUD_RATE                    115200               //19200   Al final 115200 resolvio el problema de carga inicial de configuracion M913.
 #endif
 
 //
@@ -876,7 +887,7 @@
 
       #define BEEPER_PIN             EXP2_05_PIN
 
-      #if ENABLED(PANEL_ONE)                      // Buttons connect directly to AUX-2
+      #if ENABLED(PANEL_ONE)                       // Buttons connect directly to AUX-2
         #define BTN_EN1              AUX2_03_PIN
         #define BTN_EN2              AUX2_04_PIN
         #define BTN_ENC              AUX3_02_PIN
