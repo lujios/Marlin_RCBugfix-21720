@@ -1340,7 +1340,7 @@
 
   // Define the pin to read during calibration
   #ifndef CALIBRATION_PIN
-    //#define CALIBRATION_PIN -1            // Define here to override the default pin
+    #define CALIBRATION_PIN -1            // Define here to override the default pin
     #define CALIBRATION_PIN_INVERTING false // Set to true to invert the custom pin
     //#define CALIBRATION_PIN_PULLDOWN
     #define CALIBRATION_PIN_PULLUP
@@ -3124,8 +3124,8 @@
    * Use for drivers that do not use a dedicated enable pin, but rather handle the same
    * function through a communication line such as SPI or UART.
    */
-  //#define SOFTWARE_DRIVER_ENABLE    //LujTMC2209  https://reprap.org/forum/read.php?160,874963,874963
-  
+  //#define SOFTWARE_DRIVER_ENABLE   //LujTMC2209  https://reprap.org/forum/read.php?160,874963,874963
+
   // @section tmc/stealthchop
 
   /**

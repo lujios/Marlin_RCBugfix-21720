@@ -1027,15 +1027,18 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
   void Probe::refresh_largest_sensorless_adj() {
     DEBUG_SECTION(rso, "Probe::refresh_largest_sensorless_adj", true);
     largest_sensorless_adj = -3;  // A reference away from any real probe height
-    if (TEST(endstops.state(), X_MAX)) {
+    //if (TEST(endstops.state(), X_MAX)) {
+    if (TEST(endstops.state(), X_MIN)) {                                //LujSENSORLESS dejo de funcionar al evaluar ##A_MAX                   
       NOLESS(largest_sensorless_adj, offset_sensorless_adj.a);
       DEBUG_ECHOLNPGM("Endstop_X: ", largest_sensorless_adj, " TowerX");
     }
-    if (TEST(endstops.state(), Y_MAX)) {
+    //if (TEST(endstops.state(), Y_MAX)) {
+    if (TEST(endstops.state(), Y_MIN)) {                                //LujSENSORLESS dejo de funcionar al evaluar ##A_MAX
       NOLESS(largest_sensorless_adj, offset_sensorless_adj.b);
       DEBUG_ECHOLNPGM("Endstop_Y: ", largest_sensorless_adj, " TowerY");
     }
-    if (TEST(endstops.state(), Z_MAX)) {
+    //if (TEST(endstops.state(), Z_MAX)) {
+    if (TEST(endstops.state(), Z_MIN)) {                                //LujSENSORLESS dejo de funcionar al evaluar ##A_MAX 
       NOLESS(largest_sensorless_adj, offset_sensorless_adj.c);
       DEBUG_ECHOLNPGM("Endstop_Z: ", largest_sensorless_adj, " TowerZ");
     }
