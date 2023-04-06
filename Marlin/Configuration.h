@@ -30,7 +30,7 @@
 //#define ANYCUBIC_KOSSEL_PLUS
 
 // Anycubic Probe version 1 or 2 see README.md; 0 for no probe
-#define ANYCUBIC_PROBE_VERSION 1
+#define ANYCUBIC_PROBE_VERSION 3    //LujSENSORLESS Probe version 3
 
 // Heated Bed:
 // 0 ... no heated bed
@@ -763,14 +763,10 @@
   // Anycubic Kossel
   // this is for the aluminium bed with a BuildTak-like sticker on it
   // from pid autotune. "M303 E-1 C8 S60" to run autotune on the bed at 60 degreesC for 8 cycles
-  #if ANYCUBIC_KOSSEL_ENABLE_BED == 1
-    //#define DEFAULT_bedKp 374.03
-    //#define DEFAULT_bedKi 72.47
-    //#define DEFAULT_bedKd 482.59
-		  // Luj 15-04-2018 (M303 E-1 S60 C8) M304 P20.37 I0.76 D363.81
-    #define  DEFAULT_bedKp 20.37    //Luj
+  #if ANYCUBIC_KOSSEL_ENABLE_BED == 1 
+    #define  DEFAULT_bedKp 20.37 // Luj 15-04-2018 (M303 E-1 S60 C8) M304 P20.37 I0.76 D363.81
     #define  DEFAULT_bedKi 0.76
-    #define  DEFAULT_bedKd 363.81								  
+    #define  DEFAULT_bedKd 363.81
   #elif ANYCUBIC_KOSSEL_ENABLE_BED == 2
     // TODO get real PID values for Ultrabase Bed
     #define DEFAULT_bedKp 374.03
@@ -1138,10 +1134,12 @@
 // Specify here all the endstop connectors that are connected to any endstop or probe.
 // Almost all printers will be using one per axis. Probes will use one or more of the
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
-#define USE_XMIN_PLUG                         //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
-#define USE_YMIN_PLUG                         //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
+#if ANYCUBIC_PROBE_VERSION == 3
+  #define USE_XMIN_PLUG                 //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
+  #define USE_YMIN_PLUG                 //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
+#endif
 #if ANYCUBIC_PROBE_VERSION > 0
-  #define USE_ZMIN_PLUG // a Z probe          //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
+  #define USE_ZMIN_PLUG // a Z probe    //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
 #endif
 //#define USE_IMIN_PLUG
 //#define USE_JMIN_PLUG
@@ -1217,12 +1215,11 @@
 #define X_MAX_ENDSTOP_HIT_STATE HIGH
 #define Y_MIN_ENDSTOP_HIT_STATE HIGH
 #define Y_MAX_ENDSTOP_HIT_STATE HIGH
-//#if ANYCUBIC_PROBE_VERSION == 1   // V1 is NO, V2 is NC
-//  #define Z_MIN_ENDSTOP_HIT_STATE LOW
-//#else
-//  #define Z_MIN_ENDSTOP_HIT_STATE HIGH
-//#endif
-#define Z_MIN_ENDSTOP_HIT_STATE HIGH   //LujENDSTOP_INVERTING
+#if ANYCUBIC_PROBE_VERSION == 1   // V1 is NO, V2 is NC
+  #define Z_MIN_ENDSTOP_HIT_STATE LOW
+#else
+  #define Z_MIN_ENDSTOP_HIT_STATE HIGH  //LujENDSTOP_INVERTING
+#endif
 #define Z_MAX_ENDSTOP_HIT_STATE HIGH
 //#define I_MIN_ENDSTOP_HIT_STATE HIGH
 //#define I_MAX_ENDSTOP_HIT_STATE HIGH
@@ -1236,8 +1233,8 @@
 //#define V_MAX_ENDSTOP_HIT_STATE HIGH
 //#define W_MIN_ENDSTOP_HIT_STATE HIGH
 //#define W_MAX_ENDSTOP_HIT_STATE HIGH
-//#define Z_MIN_PROBE_ENDSTOP_HIT_STATE Z_MIN_ENDSTOP_HIT_STATE
-#define Z_MIN_PROBE_ENDSTOP_HIT_STATE LOW    //Lujsensorless_probing
+#define Z_MIN_PROBE_ENDSTOP_HIT_STATE Z_MIN_ENDSTOP_HIT_STATE
+//#define Z_MIN_PROBE_ENDSTOP_HIT_STATE LOW    //Lujsensorless_probing
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
@@ -1405,7 +1402,9 @@
  * (Automatically enables USE_PROBE_FOR_Z_HOMING.)
  */
 #if ANYCUBIC_PROBE_VERSION > 0
-  //#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN  //Luj   NO se puede usar con SENSORLESS_PROBING
+  #if ANYCUBIC_PROBE_VERSION < 3       //Luj   NO se puede usar con SENSORLESS_PROBING
+    #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+  #endif
 #endif
 
 // Force the use of the probe for Z-axis homing
@@ -1447,7 +1446,9 @@
  *   (e.g., an inductive probe or a nozzle-based probe-switch.)
  */
 #if ANYCUBIC_PROBE_VERSION > 0
-  //#define FIX_MOUNTED_PROBE    //Luj   Solo uno o SENSORLESS_PROBING o FIX_MOUNTED_PROBE   //LujSENSORLESS
+  #if ANYCUBIC_PROBE_VERSION < 3       //Luj   Solo uno o SENSORLESS_PROBING o FIX_MOUNTED_PROBE   //LujSENSORLESS
+    #define FIX_MOUNTED_PROBE
+  #endif
 #endif
 
 /**
@@ -1542,11 +1543,12 @@
  * CAUTION: This can damage machines with Z lead screws.
  *          Take extreme care when setting up this feature.
  */
-#define SENSORLESS_PROBING
-#define SENSORLESS_STALLGUARD_DELAY 200  //Luj Solo para las pruebas de la PR SENSORLESS DELTA.
-//#define REDUCE_CURRENT 300              //Luj Reducir, en mmA, la corriente para SENSORLESS
-#define REDUCE_CURRENT 400              //Luj para versión PR. Que no reduce solo sustituye, y me está dando problemas de precisión a 300mA
-
+#if ANYCUBIC_PROBE_VERSION == 3
+  #define SENSORLESS_PROBING
+  #define SENSORLESS_STALLGUARD_DELAY 200  //Luj Solo para las pruebas de la PR SENSORLESS DELTA.
+  //#define REDUCE_CURRENT 300             //Luj Reducir, en mmA, la corriente para SENSORLESS
+  #define REDUCE_CURRENT 400               //Luj para versión PR. Que no reduce solo sustituye, y me está dando problemas de precisión a 300mA
+#endif
 
 /**
  * Allen key retractable z-probe as seen on many Kossel delta printers - https://reprap.org/wiki/Kossel#Automatic_bed_leveling_probe
@@ -1623,7 +1625,9 @@
 #if ANYCUBIC_PROBE_VERSION == 2
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -16.8 }
 #elif ANYCUBIC_PROBE_VERSION == 1
-  #define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0.80 }  //Luj PROBE 1 es -19,00
+  #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -19.0 }
+#elif ANYCUBIC_PROBE_VERSION == 3
+  #define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0.80 }  //LujSENSORLESS
 #else
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0 }
 #endif
@@ -3205,6 +3209,8 @@
  *  - Download files as specified for your type of display.
  *  - Plug the microSD card into the back of the display.
  *  - Boot the display and wait for the update to complete.
+ *
+ * :[ 'ORIGIN', 'FYSETC', 'HYPRECY', 'MKS', 'RELOADED', 'IA_CREALITY' ]
  */
 //#define DGUS_LCD_UI ORIGIN
 #if DGUS_UI_IS(MKS)
