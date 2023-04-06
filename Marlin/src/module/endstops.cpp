@@ -495,7 +495,8 @@ void __O2 Endstops::report_states() {
   TERN_(BLTOUCH, bltouch._reset_SW_mode());
   TERN_(JOYSTICK_DEBUG, joystick.report());
 
-} // Endstops::report_states
+} // Endstops::report_states                //Lujsensorless "🩹 Extra axis min home with Delta Sensorless Probe" Commit ID '339773dcb5e8912e3bad2d916ff8c8ebb617694a'
+                                            //              "🔧 Refactor endstop state config (#25574)" Commit Id "ea5d7e2eee641122ddf56705f6c9060d84a20df3"
 
 #define __ENDSTOP(AXIS, MINMAX) AXIS ##_## MINMAX
 #define _ENDSTOP_PIN(AXIS, MINMAX) AXIS ##_## MINMAX ##_PIN
