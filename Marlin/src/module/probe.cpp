@@ -1023,15 +1023,18 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
     DEBUG_SECTION(rso, "Probe::refresh_largest_sensorless_adj", true);
     largest_sensorless_adj = -3;  // A reference away from any real probe height
     const Endstops::endstop_mask_t state = endstops.state();
-    if (TEST(state, X_MAX)) {
+    //if (TEST(state, X_MAX)) {
+    if (TEST(state, X_MIN)) {                 //Lujsensorles   Han cambiado la configuración de los endstop y no funciona PROBING con X_MAX                 
       NOLESS(largest_sensorless_adj, offset_sensorless_adj.a);
       DEBUG_ECHOLNPGM("Endstop_X: ", largest_sensorless_adj, " TowerX");
     }
-    if (TEST(state, Y_MAX)) {
+    //if (TEST(state, Y_MAX)) {
+    if (TEST(state, Y_MIN)) {
       NOLESS(largest_sensorless_adj, offset_sensorless_adj.b);
       DEBUG_ECHOLNPGM("Endstop_Y: ", largest_sensorless_adj, " TowerY");
     }
-    if (TEST(state, Z_MAX)) {
+    //if (TEST(state, Z_MAX)) {
+    if (TEST(state, Z_MIN)) {
       NOLESS(largest_sensorless_adj, offset_sensorless_adj.c);
       DEBUG_ECHOLNPGM("Endstop_Z: ", largest_sensorless_adj, " TowerZ");
     }
