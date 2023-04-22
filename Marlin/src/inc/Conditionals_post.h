@@ -255,12 +255,14 @@
 // Calibration codes only for non-core axes
 #if EITHER(BACKLASH_GCODE, CALIBRATION_GCODE)
   #if ANY(IS_CORE, MARKFORGED_XY, MARKFORGED_YX)
-    #define CAN_CALIBRATE(A,B) (_AXIS(A) == B)
+    #define CAN_CALIBRATE(A,B) TERN0(HAS_##A##_AXIS, (_AXIS(A) == B))
   #else
-    #define CAN_CALIBRATE(A,B) true
+    #define CAN_CALIBRATE(A,B) ENABLED(HAS_##A##_AXIS)
   #endif
+  #define AXIS_CAN_CALIBRATE(A) CAN_CALIBRATE(A,NORMAL_AXIS)
+#else
+  #define AXIS_CAN_CALIBRATE(A) false
 #endif
-#define AXIS_CAN_CALIBRATE(A) CAN_CALIBRATE(A,NORMAL_AXIS)
 
 /**
  * No adjustable bed on non-cartesians
@@ -341,21 +343,21 @@
   #ifdef MANUAL_U_HOME_POS
     #define U_HOME_POS MANUAL_U_HOME_POS
   #else
-    #define U_HOME_POS (U_HOME_DIR < 0 ? U_MIN_POS : U_MAX_POS)
+    #define U_HOME_POS TERN(U_HOME_TO_MIN, U_MIN_POS, U_MAX_POS)
   #endif
 #endif
 #if HAS_V_AXIS
   #ifdef MANUAL_V_HOME_POS
     #define V_HOME_POS MANUAL_V_HOME_POS
   #else
-    #define V_HOME_POS (V_HOME_DIR < 0 ? V_MIN_POS : V_MAX_POS)
+    #define V_HOME_POS TERN(V_HOME_TO_MIN, V_MIN_POS, V_MAX_POS)
   #endif
 #endif
 #if HAS_W_AXIS
   #ifdef MANUAL_W_HOME_POS
     #define W_HOME_POS MANUAL_W_HOME_POS
   #else
-    #define W_HOME_POS (W_HOME_DIR < 0 ? W_MIN_POS : W_MAX_POS)
+    #define W_HOME_POS TERN(W_HOME_TO_MIN, W_MIN_POS, W_MAX_POS)
   #endif
 #endif
 
@@ -2296,6 +2298,49 @@
   #define HAS_Z4_MAX 1
 #endif
 
+#if HAS_X_MIN || HAS_X_MAX
+  #define HAS_X_ENDSTOP 1
+#endif
+#if HAS_X2_MIN || HAS_X2_MAX
+  #define HAS_X2_ENDSTOP 1
+#endif
+#if HAS_Y_MIN || HAS_Y_MAX
+  #define HAS_Y_ENDSTOP 1
+#endif
+#if HAS_Y2_MIN || HAS_Y2_MAX
+  #define HAS_Y2_ENDSTOP 1
+#endif
+#if HAS_Z_MIN || HAS_Z_MAX
+  #define HAS_Z_ENDSTOP 1
+#endif
+#if HAS_Z2_MIN || HAS_Z2_MAX
+  #define HAS_Z2_ENDSTOP 1
+#endif
+#if HAS_Z3_MIN || HAS_Z3_MAX
+  #define HAS_Z3_ENDSTOP 1
+#endif
+#if HAS_Z4_MIN || HAS_Z4_MAX
+  #define HAS_Z4_ENDSTOP 1
+#endif
+#if HAS_I_MIN || HAS_I_MAX
+  #define HAS_I_ENDSTOP 1
+#endif
+#if HAS_J_MIN || HAS_J_MAX
+  #define HAS_J_ENDSTOP 1
+#endif
+#if HAS_K_MIN || HAS_K_MAX
+  #define HAS_K_ENDSTOP 1
+#endif
+#if HAS_U_MIN || HAS_U_MAX
+  #define HAS_U_ENDSTOP 1
+#endif
+#if HAS_V_MIN || HAS_V_MAX
+  #define HAS_V_ENDSTOP 1
+#endif
+#if HAS_W_MIN || HAS_W_MAX
+  #define HAS_W_ENDSTOP 1
+#endif
+
 #if HAS_BED_PROBE && PIN_EXISTS(Z_MIN_PROBE)
   #define HAS_Z_MIN_PROBE_PIN 1
 #endif
@@ -3180,24 +3225,24 @@
 #endif
 
 /**
- * Z_HOMING_HEIGHT / Z_CLEARANCE_BETWEEN_PROBES
+ * Z_CLEARANCE_FOR_HOMING / Z_CLEARANCE_BETWEEN_PROBES
  */
-#ifndef Z_HOMING_HEIGHT
+#ifndef Z_CLEARANCE_FOR_HOMING
   #ifdef Z_CLEARANCE_BETWEEN_PROBES
-    #define Z_HOMING_HEIGHT Z_CLEARANCE_BETWEEN_PROBES
+    #define Z_CLEARANCE_FOR_HOMING Z_CLEARANCE_BETWEEN_PROBES
   #else
-    #define Z_HOMING_HEIGHT 0
+    #define Z_CLEARANCE_FOR_HOMING 0
   #endif
 #endif
 
 #if PROBE_SELECTED
   #ifndef Z_CLEARANCE_BETWEEN_PROBES
-    #define Z_CLEARANCE_BETWEEN_PROBES Z_HOMING_HEIGHT
+    #define Z_CLEARANCE_BETWEEN_PROBES Z_CLEARANCE_FOR_HOMING
   #endif
-  #if Z_CLEARANCE_BETWEEN_PROBES > Z_HOMING_HEIGHT
+  #if Z_CLEARANCE_BETWEEN_PROBES > Z_CLEARANCE_FOR_HOMING
     #define Z_CLEARANCE_BETWEEN_MANUAL_PROBES Z_CLEARANCE_BETWEEN_PROBES
   #else
-    #define Z_CLEARANCE_BETWEEN_MANUAL_PROBES Z_HOMING_HEIGHT
+    #define Z_CLEARANCE_BETWEEN_MANUAL_PROBES Z_CLEARANCE_FOR_HOMING
   #endif
   #ifndef Z_CLEARANCE_MULTI_PROBE
     #define Z_CLEARANCE_MULTI_PROBE Z_CLEARANCE_BETWEEN_PROBES

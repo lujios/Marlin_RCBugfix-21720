@@ -168,7 +168,7 @@ xyz_pos_t Probe::offset; // Initialized by settings.load()
       LCD_MESSAGE(MSG_MANUAL_DEPLOY_TOUCHMI);
       ui.return_to_status();
 
-      TERN_(HOST_PROMPT_SUPPORT, hostui.prompt_do(PROMPT_USER_CONTINUE, F("Deploy TouchMI"), FPSTR(CONTINUE_STR)));
+      TERN_(HOST_PROMPT_SUPPORT, hostui.continue_prompt(F("Deploy TouchMI")));
       TERN_(HAS_RESUME_CONTINUE, wait_for_user_response());
       ui.reset_status();
       ui.goto_screen(prev_screen);
@@ -364,7 +364,7 @@ FORCE_INLINE void probe_specific_action(const bool deploy) {
       ui.set_status(ds_str, 99);
       SERIAL_ECHOLNF(deploy ? GET_EN_TEXT_F(MSG_MANUAL_DEPLOY) : GET_EN_TEXT_F(MSG_MANUAL_STOW));
 
-      TERN_(HOST_PROMPT_SUPPORT, hostui.prompt_do(PROMPT_USER_CONTINUE, ds_str, FPSTR(CONTINUE_STR)));
+      TERN_(HOST_PROMPT_SUPPORT, hostui.continue_prompt(ds_str));
       TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired(ds_str));
       TERN_(DWIN_LCD_PROUI, DWIN_Popup_Confirm(ICON_BLTouch, ds_str, FPSTR(CONTINUE_STR)));
       TERN_(HAS_RESUME_CONTINUE, wait_for_user_response());
@@ -551,6 +551,7 @@ bool Probe::set_deployed(const bool deploy, const bool no_return/*=false*/) {
   #endif
 
   // If preheating is required before any probing...
+  // TODO: Consider skipping this for things like M401, G34, etc.
   TERN_(PREHEAT_BEFORE_PROBING, if (deploy) preheat_for_probing(PROBING_NOZZLE_TEMP, PROBING_BED_TEMP));
 
   if (!no_return) do_blocking_move_to(old_xy); // Return to the original location unless handled externally
@@ -1021,18 +1022,16 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
   void Probe::refresh_largest_sensorless_adj() {
     DEBUG_SECTION(rso, "Probe::refresh_largest_sensorless_adj", true);
     largest_sensorless_adj = -3;  // A reference away from any real probe height
-    //if (TEST(endstops.state(), X_MAX)) {
-    if (TEST(endstops.state(), X_MIN)) {                                //LujSENSORLESS dejo de funcionar al evaluar ##A_MAX                   
+    const Endstops::endstop_mask_t state = endstops.state();
+    if (TEST(state, X_MAX)) {
       NOLESS(largest_sensorless_adj, offset_sensorless_adj.a);
       DEBUG_ECHOLNPGM("Endstop_X: ", largest_sensorless_adj, " TowerX");
     }
-    //if (TEST(endstops.state(), Y_MAX)) {
-    if (TEST(endstops.state(), Y_MIN)) {                                //LujSENSORLESS dejo de funcionar al evaluar ##A_MAX
+    if (TEST(state, Y_MAX)) {
       NOLESS(largest_sensorless_adj, offset_sensorless_adj.b);
       DEBUG_ECHOLNPGM("Endstop_Y: ", largest_sensorless_adj, " TowerY");
     }
-    //if (TEST(endstops.state(), Z_MAX)) {
-    if (TEST(endstops.state(), Z_MIN)) {                                //LujSENSORLESS dejo de funcionar al evaluar ##A_MAX 
+    if (TEST(state, Z_MAX)) {
       NOLESS(largest_sensorless_adj, offset_sensorless_adj.c);
       DEBUG_ECHOLNPGM("Endstop_Z: ", largest_sensorless_adj, " TowerZ");
     }
