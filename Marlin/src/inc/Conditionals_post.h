@@ -1942,7 +1942,7 @@
 
 #define _HAS_STOP(A,N,M,C) ((A##_HOME_TO_##M || (C+0)) && PIN_EXISTS(A##N##_##M))
 
-#if _HAS_STOP(X,,MIN,)
+#if _HAS_STOP(X,,MIN,ENABLED(HAS_DELTA_SENSORLESS_PROBING))  //lujsensorles corregir limpieza endstop
   #define HAS_X_MIN 1
 #endif
 #if _HAS_STOP(X,,MAX,ENABLED(DUAL_X_CARRIAGE))
@@ -1952,9 +1952,10 @@
   #define HAS_X_ENDSTOP 1
 #endif
 
-#if _HAS_STOP(Y,,MIN,)
+#if _HAS_STOP(Y,,MIN,(HAS_DELTA_SENSORLESS_PROBING))   //lujsensorles corregir limpieza endstop
   #define HAS_Y_MIN 1
-#elif _HAS_STOP(Y,,MAX,)
+#endif
+#if _HAS_STOP(Y,,MAX,)                               //lujsensorles corregir limpieza endstop
   #define HAS_Y_MAX 1
 #endif
 #if HAS_Y_MIN || HAS_Y_MAX

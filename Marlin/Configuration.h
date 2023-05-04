@@ -1158,11 +1158,11 @@
 // Almost all printers will be using one per axis. Probes will use one or more of the
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
 #if ANYCUBIC_PROBE_VERSION == 3
-  #define USE_XMIN_PLUG                 //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
-  #define USE_YMIN_PLUG                 //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
+  //#define USE_XMIN_PLUG                 //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
+  //#define USE_YMIN_PLUG                 //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
 #endif
 #if ANYCUBIC_PROBE_VERSION > 0
-  #define USE_ZMIN_PLUG // a Z probe    //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
+  //#define USE_ZMIN_PLUG // a Z probe    //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
 #endif
 //#define USE_IMIN_PLUG
 //#define USE_JMIN_PLUG
@@ -1170,9 +1170,9 @@
 //#define USE_UMIN_PLUG
 //#define USE_VMIN_PLUG
 //#define USE_WMIN_PLUG
-#define USE_XMAX_PLUG
-#define USE_YMAX_PLUG
-#define USE_ZMAX_PLUG
+//#define USE_XMAX_PLUG                   //LujSENSORLESS. |Se eliminan con una limpieza de código en endstop
+//#define USE_YMAX_PLUG                   //LujSENSORLESS. |
+//#define USE_ZMAX_PLUG                   //LujSENSORLESS. |
 //#define USE_IMAX_PLUG
 //#define USE_JMAX_PLUG
 //#define USE_KMAX_PLUG

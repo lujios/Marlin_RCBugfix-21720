@@ -619,7 +619,7 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
 
   TERN_(HAS_QUIET_PROBING, set_probing_paused(true));
 
-  // Move down until the probe is triggered
+  // Move down until the probe is triggered       
   do_blocking_move_to_z(z, fr_mm_s);
 
   // Check to see if the probe was triggered
