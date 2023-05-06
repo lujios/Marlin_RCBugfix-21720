@@ -341,11 +341,11 @@
    * Serial2 -- AUX-4 Pin 18 (D16 TX2) and AUX-4 Pin 17 (D17 RX2)
    * Serial1 -- Pins D18 and D19 are used for Z-MIN and Z-MAX
    */
-  #define X_HARDWARE_SERIAL Serial3
+  //#define X_HARDWARE_SERIAL Serial3         //Luj
   //#define X2_HARDWARE_SERIAL Serial1
-  #define Y_HARDWARE_SERIAL Serial3
+  //#define Y_HARDWARE_SERIAL Serial3         //Luj
   //#define Y2_HARDWARE_SERIAL Serial1
-  #define Z_HARDWARE_SERIAL Serial3
+  //#define Z_HARDWARE_SERIAL Serial3         //Luj
   //#define Z2_HARDWARE_SERIAL Serial1
   //#define E0_HARDWARE_SERIAL Serial1
   //#define E1_HARDWARE_SERIAL Serial1
@@ -399,12 +399,10 @@
   #endif
 
   #ifndef E0_SERIAL_TX_PIN
-    #define E0_SERIAL_TX_PIN                  44  //LUj
-    //#define E0_SERIAL_TX_PIN                  14 //44  LUj    
+    #define E0_SERIAL_TX_PIN                  44
   #endif
   #ifndef E0_SERIAL_RX_PIN
-    #define E0_SERIAL_RX_PIN                  66  //Luj
-    //#define E0_SERIAL_RX_PIN                  15 //66  Luj    
+    #define E0_SERIAL_RX_PIN                  66
   #endif
   #ifndef E1_SERIAL_TX_PIN
     #define E1_SERIAL_TX_PIN                  -1
@@ -448,8 +446,6 @@
   #ifndef E7_SERIAL_RX_PIN
     #define E7_SERIAL_RX_PIN                  -1
   #endif
-  // Reduce baud rate to improve software serial reliability    //LujTMC2209   copiado de pins_BTT_SKR_V1_4.h
-  #define TMC_BAUD_RATE                    115200               //19200   Al final 115200 resolvio el problema de carga inicial de configuracion M913.
 #endif
 
 //

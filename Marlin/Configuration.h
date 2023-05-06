@@ -85,6 +85,31 @@
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
   #define MOTHERBOARD BOARD_TRIGORILLA_14
+  
+  //#define X_STOP_PIN  2
+  #define X_MIN_PIN  2
+  #define X_MAX_PIN  2
+  //#define Y_STOP_PIN  3
+  #define Y_MIN_PIN  3
+  #define Y_MAX_PIN  3
+  //#define Z_STOP_PIN 19
+  #define Z_MIN_PIN 19
+  #define Z_MAX_PIN 19
+  #define X_HARDWARE_SERIAL Serial3
+  #define Y_HARDWARE_SERIAL Serial3
+  #define Z_HARDWARE_SERIAL Serial3
+  #define X_SERIAL_TX_PIN 14
+  #define X_SERIAL_RX_PIN 15
+  #define Y_SERIAL_TX_PIN 14
+  #define Y_SERIAL_RX_PIN 15
+  #define Z_SERIAL_TX_PIN 14
+  #define Z_SERIAL_RX_PIN 15
+  //#define E0_SERIAL_TX_PIN 14
+  //#define E0_SERIAL_RX_PIN 15
+  #ifndef TMC_BAUD_RATE            
+  // Reduce baud rate to improve software serial reliability    //LujTMC2209   copiado de pins_BTT_SKR_V1_4.h
+    #define TMC_BAUD_RATE 115200   //Lujsensorless   Al final 115200 resolvio el problema de carga inicial de configuracion M913.
+  #endif
 #endif
 
 /**
