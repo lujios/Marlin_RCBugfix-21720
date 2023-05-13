@@ -86,31 +86,6 @@
 #ifndef MOTHERBOARD
   #define MOTHERBOARD BOARD_TRIGORILLA_14
   
-  //Lujsensorless   Configuracion pins que antes estaba en PINS_RAMP
-  #define X_SAFETY_STOP  //Lujsensorless Necesario para que se active USE_X_MIN en 'Conditionals_post.h'
-  #define X_MIN_PIN  2
-  #define X_MAX_PIN  2
-  #define Y_SAFETY_STOP  //Lujsensorless Necesario para que se active USE_Y_MIN en 'Conditionals_post.h'
-  #define Y_MIN_PIN  3
-  #define Y_MAX_PIN  3
-  #define Z_SAFETY_STOP  //Lujsensorless Necesario para que se active USE_Z_MIN en 'Conditionals_post.h'
-  #define Z_MIN_PIN 19
-  #define Z_MAX_PIN 19
-  #define X_HARDWARE_SERIAL Serial3
-  #define Y_HARDWARE_SERIAL Serial3
-  #define Z_HARDWARE_SERIAL Serial3
-  #define X_SERIAL_TX_PIN 14
-  #define X_SERIAL_RX_PIN 15
-  #define Y_SERIAL_TX_PIN 14
-  #define Y_SERIAL_RX_PIN 15
-  #define Z_SERIAL_TX_PIN 14
-  #define Z_SERIAL_RX_PIN 15
-  //#define E0_SERIAL_TX_PIN 14
-  //#define E0_SERIAL_RX_PIN 15
-  #ifndef TMC_BAUD_RATE            
-  // Reduce baud rate to improve software serial reliability    //LujTMC2209   copiado de pins_BTT_SKR_V1_4.h
-    #define TMC_BAUD_RATE 115200   //Lujsensorless   Al final 115200 resolvio el problema de carga inicial de configuracion M913.
-  #endif
 #endif
 
 /**
@@ -1185,6 +1160,31 @@
 // Almost all printers will be using one per axis. Probes will use one or more of the
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
 #if ANYCUBIC_PROBE_VERSION == 3
+  //Lujsensorless   Configuracion pins que antes estaba en PINS_RAMP
+  #define X_SAFETY_STOP  //Lujsensorless Necesario para que se active USE_X_MIN en 'Conditionals_post.h'
+  #define X_MIN_PIN  2
+  #define X_MAX_PIN  2
+  #define Y_SAFETY_STOP  //Lujsensorless Necesario para que se active USE_Y_MIN en 'Conditionals_post.h'
+  #define Y_MIN_PIN  3
+  #define Y_MAX_PIN  3
+  #define Z_SAFETY_STOP  //Lujsensorless Necesario para que se active USE_Z_MIN en 'Conditionals_post.h'
+  #define Z_MIN_PIN 19
+  #define Z_MAX_PIN 19
+  #define X_HARDWARE_SERIAL Serial3
+  #define Y_HARDWARE_SERIAL Serial3
+  #define Z_HARDWARE_SERIAL Serial3
+  #define X_SERIAL_TX_PIN 14
+  #define X_SERIAL_RX_PIN 15
+  #define Y_SERIAL_TX_PIN 14
+  #define Y_SERIAL_RX_PIN 15
+  #define Z_SERIAL_TX_PIN 14
+  #define Z_SERIAL_RX_PIN 15
+  //#define E0_SERIAL_TX_PIN 14
+  //#define E0_SERIAL_RX_PIN 15
+  #ifndef TMC_BAUD_RATE            
+  // Reduce baud rate to improve software serial reliability    //LujTMC2209   copiado de pins_BTT_SKR_V1_4.h
+    #define TMC_BAUD_RATE 115200   //Lujsensorless   Al final 115200 resolvio el problema de carga inicial de configuracion M913.
+  #endif
   //#define USE_XMIN_PLUG                 //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
   //#define USE_YMIN_PLUG                 //LujSENSORLESS. Hay que activarlo para SENSORLESS_PROBING.
 #endif
