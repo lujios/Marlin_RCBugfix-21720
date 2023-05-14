@@ -626,7 +626,10 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
   const bool probe_triggered = (
     #if HAS_DELTA_SENSORLESS_PROBING
       endstops.trigger_state() & (_BV(X_MIN) | _BV(Y_MIN) | _BV(Z_MIN))
-      //endstops.trigger_state() & (_BV(X_MAX) | _BV(Y_MAX) | _BV(Z_MAX))   //LujSENSORLESS dejo de funcionar al evaluar ##A_MAX
+      //endstops.trigger_state() & (_BV(X_MAX) | _BV(Y_MAX) | _BV(Z_MAX))   //LujSENSORLESS Al unificar las macros que actualizan hit_state ahora:
+                                                                            //              #_MIN se activan para -direction
+                                                                            //              #_MAX se activan para +direction
+                                                                            //              Es más intuitivo ahora. Una sonda_Z fisica triggered hacia +direction.
     #else
       TEST(endstops.trigger_state(), Z_MIN_PROBE)
     #endif

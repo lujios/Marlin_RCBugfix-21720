@@ -501,7 +501,10 @@ void __O2 Endstops::report_states() {
 
 } // Endstops::report_states                //Lujsensorless "🩹 Extra axis min home with Delta Sensorless Probe" Commit ID '339773dcb5e8912e3bad2d916ff8c8ebb617694a'
                                             //              "🔧 Refactor endstop state config (#25574)" Commit Id "ea5d7e2eee641122ddf56705f6c9060d84a20df3"
-
+                                            //Lujsensorless Antes estas macros unicamente activaban MAX para HAS_DELTA_SENSORLESS_PROBING
+                                            //              Se han unificado con lo que ahora activa MIN o MAX según el sentido del movimiento:
+                                            //              +direction --> MAX
+                                            //              -direction --> MIN   
 #define __ENDSTOP(AXIS, MINMAX) AXIS ##_## MINMAX
 #define _ENDSTOP_PIN(AXIS, MINMAX) AXIS ##_## MINMAX ##_PIN
 #define _ENDSTOP_HIT_STATE(AXIS, MINMAX) AXIS ##_## MINMAX ##_ENDSTOP_HIT_STATE
