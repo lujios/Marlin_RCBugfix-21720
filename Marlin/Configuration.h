@@ -1906,6 +1906,21 @@
 //#define V_HOME_DIR -1
 //#define W_HOME_DIR -1
 
+/**
+ * Safety Stops
+ * If an axis has endstops on both ends the one specified above is used for
+ * homing, while the other can be used for things like SD_ABORT_ON_ENDSTOP_HIT.
+ */
+//#define X_SAFETY_STOP
+//#define Y_SAFETY_STOP
+//#define Z_SAFETY_STOP
+//#define I_SAFETY_STOP
+//#define J_SAFETY_STOP
+//#define K_SAFETY_STOP
+//#define U_SAFETY_STOP
+//#define V_SAFETY_STOP
+//#define W_SAFETY_STOP
+
 // @section geometry
 
 // The size of the printable area
@@ -3482,6 +3497,15 @@
    * HELVETICA - Lightweight font, no anti-aliasing. Supports Basic Latin (0x0020-0x007F) and Latin-1 Supplement (0x0080-0x00FF) characters only.
    */
   #define TFT_FONT  NOTOSANS
+
+  /**
+   * TFT Theme for Color_UI. Choose one of the following or add a new one to 'Marlin/src/lcd/tft/themes' directory
+   *
+   * BLUE_MARLIN  - Default theme with 'midnight blue' background
+   * BLACK_MARLIN - Theme with 'black' background
+   * ANET_BLACK   - Theme used for Anet ET4/5
+   */
+  #define TFT_THEME BLACK_MARLIN
 
   //#define TFT_SHARED_IO   // I/O is shared between TFT display and other devices. Disable async data transfer.
 
