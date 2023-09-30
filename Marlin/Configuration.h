@@ -993,7 +993,7 @@
     #define DELTA_RADIUS (DELTA_SMOOTH_ROD_OFFSET-(DELTA_EFFECTOR_OFFSET)-(DELTA_CARRIAGE_OFFSET))          // (mm) Get this value from G33 auto calibrate
   #else
     // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
-    #define PRINTABLE_RADIUS 90.0   // (mm)
+    #define PRINTABLE_RADIUS       90.0   // (mm)
     // Maximum reachable area
     #define DELTA_MAX_RADIUS       90.0   // (mm)
     // Center-to-center distance of the holes in the diagonal push rods.
