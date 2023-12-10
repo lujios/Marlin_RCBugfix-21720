@@ -1026,9 +1026,9 @@
   //16:10:30.160 : echo:  M665 L217.00 R101.20 H293.61 S100.00 X-0.55 Y0.00 Z0.00 A0.00 B0.00 C0.00    18/11/2022
   //22:18:45.379 : M665 L217.00 R101.10 H293.59 S100.00 X-0.55 Y0.00 Z0.00 A0.00 B0.00 C0.00           24/01/2023
 
-  // Delta radius and diagonal rod adjustments (mm)
-  //#define DELTA_RADIUS_TRIM_TOWER { 0.0, 0.0, 0.0 }
-  //#define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 }
+  // Delta radius and diagonal rod adjustments
+  //#define DELTA_RADIUS_TRIM_TOWER       { 0.0, 0.0, 0.0 } // (mm)
+  //#define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 } // (mm)
 
 #endif
 
@@ -1625,7 +1625,7 @@
  */
 #if ANYCUBIC_PROBE_VERSION == 3
   #define SENSORLESS_PROBING
-  #define SENSORLESS_STALLGUARD_DELAY 200  //Luj Solo para las pruebas de la PR SENSORLESS DELTA.
+  #define SENSORLESS_STALLGUARD_DELAY 300  //Luj Solo para las pruebas de la PR SENSORLESS DELTA.
   //#define REDUCE_CURRENT 300             //Luj Reducir, en mmA, la corriente para SENSORLESS
   #define REDUCE_CURRENT 400               //Luj para versión PR. Que no reduce solo sustituye, y me está dando problemas de precisión a 300mA
 #endif
@@ -1793,21 +1793,21 @@
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
-#define Z_CLEARANCE_DEPLOY_PROBE   10 // (mm) Z Clearance for Deploy/Stow
+#define Z_CLEARANCE_DEPLOY_PROBE   50 // (mm) Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES  5 // (mm) Z Clearance between probe points
 #define Z_CLEARANCE_MULTI_PROBE     5 // (mm) Z Clearance between multiple probes
 #define Z_PROBE_ERROR_TOLERANCE     3 // (mm) Tolerance for early trigger (<= -probe.offset.z + ZPET)
 //#define Z_AFTER_PROBING           5 // (mm) Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -2 // (mm) Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -5 // (mm) Farthest distance below the trigger-point to go before stopping
 
 // For M851 provide ranges for adjusting the X, Y, and Z probe offsets
 //#define PROBE_OFFSET_XMIN -50   // (mm)
 //#define PROBE_OFFSET_XMAX  50   // (mm)
 //#define PROBE_OFFSET_YMIN -50   // (mm)
 //#define PROBE_OFFSET_YMAX  50   // (mm)
-//#define PROBE_OFFSET_ZMIN -20   // (mm)
-//#define PROBE_OFFSET_ZMAX  20   // (mm)
+#define PROBE_OFFSET_ZMIN   -20   // (mm)
+#define PROBE_OFFSET_ZMAX    20   // (mm)
 
 // Enable the M48 repeatability test to test probe accuracy
 #if ANYCUBIC_PROBE_VERSION > 0
@@ -2546,7 +2546,7 @@
 
 #define PREHEAT_2_LABEL       "ABS"
 #define PREHEAT_2_TEMP_HOTEND 240
-#define PREHEAT_2_TEMP_BED    100
+#define PREHEAT_2_TEMP_BED    110
 #define PREHEAT_2_TEMP_CHAMBER 35
 #define PREHEAT_2_FAN_SPEED   255 // Value from 0 to 255
 
