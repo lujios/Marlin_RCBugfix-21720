@@ -892,7 +892,7 @@ void restore_feedrate_and_scaling() {
     #elif ENABLED(DELTA)
 
       soft_endstop.min[axis] = base_min_pos(axis);
-      soft_endstop.max[axis] = (axis == Z_AXIS) ? DIFF_TERN(USE_PROBE_FOR_Z_HOMING, delta_height, probe.offset.z) : base_home_pos(axis);
+      soft_endstop.max[axis] = (axis == Z_AXIS) ? DIFF_TERN(USE_PROBE_FOR_Z_HOMING, delta_height, probe.offset.z) : base_max_pos(axis);  //Luj error en f7a3172c20cfed3178ab9ab099ff386f61560ad9
 
       switch (axis) {
         case X_AXIS:
