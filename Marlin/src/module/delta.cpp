@@ -242,7 +242,7 @@ void home_delta() {
   #endif
 
   // Move all carriages together linearly until an endstop is hit.
-  current_position.z = DIFF_TERN(USE_PROBE_FOR_Z_HOMING, delta_height + 10, probe.offset.z);
+  current_position.z = DIFF_TERN(HAS_BED_PROBE, delta_height + 10, probe.offset.z);  //Luj error en f7a3172c20cfed3178ab9ab099ff386f61560ad9 HAS_BED_PROBE que se activa con SENSORLESS
   line_to_current_position(homing_feedrate(Z_AXIS));
   planner.synchronize();
   TERN_(HAS_DELTA_SENSORLESS_PROBING, endstops.report_states());
