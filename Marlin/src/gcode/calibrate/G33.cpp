@@ -69,8 +69,8 @@ void ac_home() {
   TERN_(SENSORLESS_HOMING, endstops.set_z_sensorless_current(true));   //Lujsensoless. Igualar código con G28
   endstops.enable(true);
   home_delta();
-  endstops.not_homing();                                               //Lujsensoless. Igualar código con G28
   TERN_(SENSORLESS_HOMING, endstops.set_z_sensorless_current(false));
+  endstops.not_homing();                                               //Lujsensoless. Igualar código con G28  
 }
 
 void ac_setup(const bool reset_bed) {
