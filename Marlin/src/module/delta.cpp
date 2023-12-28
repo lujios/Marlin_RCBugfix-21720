@@ -227,6 +227,9 @@ void home_delta() {
 
   // Disable stealthChop if used. Enable diag1 pin on driver.
   #if ENABLED(SENSORLESS_HOMING)
+    #if SENSORLESS_STALLGUARD_DELAY
+      safe_delay(SENSORLESS_STALLGUARD_DELAY*3); // Short delay needed to settle
+    #endif
     TERN_(X_SENSORLESS, sensorless_t stealth_states_x = start_sensorless_homing_per_axis(X_AXIS));
     TERN_(Y_SENSORLESS, sensorless_t stealth_states_y = start_sensorless_homing_per_axis(Y_AXIS));
     TERN_(Z_SENSORLESS, sensorless_t stealth_states_z = start_sensorless_homing_per_axis(Z_AXIS));
@@ -236,9 +239,6 @@ void home_delta() {
     TERN_(U_SENSORLESS, sensorless_t stealth_states_u = start_sensorless_homing_per_axis(U_AXIS));
     TERN_(V_SENSORLESS, sensorless_t stealth_states_v = start_sensorless_homing_per_axis(V_AXIS));
     TERN_(W_SENSORLESS, sensorless_t stealth_states_w = start_sensorless_homing_per_axis(W_AXIS));
-    //#if SENSORLESS_STALLGUARD_DELAY                                             //Lujsensorles Igualar codigo con G28
-    //  safe_delay(SENSORLESS_STALLGUARD_DELAY); // Short delay needed to settle
-    //#endif
   #endif
 
   // Move all carriages together linearly until an endstop is hit.
