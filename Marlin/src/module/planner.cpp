@@ -1571,10 +1571,10 @@ void Planner::check_axes_activity() {
     if (onoff) {
       saved_motion_state.acceleration.x = settings.max_acceleration_mm_per_s2[X_AXIS];
       saved_motion_state.acceleration.y = settings.max_acceleration_mm_per_s2[Y_AXIS];
-      settings.max_acceleration_mm_per_s2[X_AXIS] = settings.max_acceleration_mm_per_s2[Y_AXIS] = 100;
+      settings.max_acceleration_mm_per_s2[X_AXIS] = settings.max_acceleration_mm_per_s2[Y_AXIS] = 200;    //Lujsensorless a 200 evitamos falsos positivos. DEFAULT_MAX_ACCELERATION 3000.
       #if ENABLED(DELTA)
         saved_motion_state.acceleration.z = settings.max_acceleration_mm_per_s2[Z_AXIS];
-        settings.max_acceleration_mm_per_s2[Z_AXIS] = 100;
+        settings.max_acceleration_mm_per_s2[Z_AXIS] = 200;
       #endif
       #if ENABLED(CLASSIC_JERK)
         saved_motion_state.jerk_state = max_jerk;

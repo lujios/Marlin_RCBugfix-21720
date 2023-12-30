@@ -152,9 +152,9 @@
                                  planner.settings.max_acceleration_mm_per_s2[Y_AXIS]
                                  OPTARG(DELTA, planner.settings.max_acceleration_mm_per_s2[Z_AXIS])
                                );
-    planner.settings.max_acceleration_mm_per_s2[X_AXIS] = 100;
-    planner.settings.max_acceleration_mm_per_s2[Y_AXIS] = 100;
-    TERN_(DELTA, planner.settings.max_acceleration_mm_per_s2[Z_AXIS] = 100);
+    planner.settings.max_acceleration_mm_per_s2[X_AXIS] = 200;                    //Lujsensorless a 200 evitamos falsos positivos. DEFAULT_MAX_ACCELERATION 3000.
+    planner.settings.max_acceleration_mm_per_s2[Y_AXIS] = 200;
+    TERN_(DELTA, planner.settings.max_acceleration_mm_per_s2[Z_AXIS] = 200);
     #if ENABLED(CLASSIC_JERK)
       motion_state.jerk_state = planner.max_jerk;
       planner.max_jerk.set(0, 0 OPTARG(DELTA, 0));
