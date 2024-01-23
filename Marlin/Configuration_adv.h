@@ -607,8 +607,8 @@
  * gets it spinning reliably for a short time before setting the requested speed.
  * (Does not work on Sanguinololu with FAN_SOFT_PWM.)
  */
-//#define EFAN_KICKSTART_TIME  100  // (ms)
-//#define EFAN_KICKSTART_POWER 180  // 64-255
+//#define FAN_KICKSTART_TIME  100  // (ms)
+//#define FAN_KICKSTART_POWER 180  // 64-255
 
 // Some coolers may require a non-zero "off" state.
 //#define FAN_OFF_PWM  1
@@ -700,9 +700,6 @@
 
 #define EXTRUDER_AUTO_FAN_TEMPERATURE        50
 #define EXTRUDER_AUTO_FAN_SPEED             255  // 255 is full speed
-//#define EXTRUDER_AUTO_FAN_KICKSTART_TIME  100  // (ms)
-//#define EXTRUDER_AUTO_FAN_KICKSTART_POWER 180  // 64-255
-
 #define CHAMBER_AUTO_FAN_TEMPERATURE   28
 #define CHAMBER_AUTO_FAN_SPEED        255
 #define COOLER_AUTO_FAN_TEMPERATURE    18
@@ -2730,6 +2727,7 @@
 //#define SERIAL_DMA
 
 /**
+ * Set the number of proportional font spaces required to fill up a typical character space.
  * This can help to better align the output of commands like `G29 O` Mesh Output.
  *
  * For clients that use a fixed-width font (like OctoPrint), leave this set to 1.0.
@@ -3479,7 +3477,7 @@
    * Enable M122 debugging command for TMC stepper drivers.
    * M122 S0/1 will enable continuous reporting.
    */
-  #define TMC_DEBUG
+  #define TMC_DEBUG          //Lujsensorless
 
   /**
    * You can set your own advanced settings by filling in predefined functions.
@@ -4001,6 +3999,15 @@
 #if ENABLED(FASTER_GCODE_PARSER)
   //#define GCODE_QUOTED_STRINGS  // Support for quoted string parameters
 #endif
+
+/**
+ * Variables
+ *
+ * Define a variable from 100-115 with G-code like '#101=19.6'.
+ * A variable can then be used in a G-code expression like 'G0 X[#101+3]'.
+ * See https://gcodetutor.com/cnc-macro-programming/cnc-variables.html
+ */
+//#define GCODE_VARIABLES
 
 /**
  * Support for MeatPack G-code compression (https://github.com/scottmudge/OctoPrint-MeatPack)
