@@ -1015,7 +1015,7 @@
   #endif
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT 293.35             // (mm) Get this value from G33 auto calibrate
+  #define DELTA_HEIGHT 292.16             // (mm) Get this value from G33 auto calibrate
 
   #define DELTA_ENDSTOP_ADJ { -0.734, -0.511, 0.0 } // Get these values from G33 auto calibrate
   //19:02:13.068 : echo:  M666 X-0.29 Y-0.09 Z0.00  sensorless X0.08 Y-0.14 Z0.02    01/03/2022
@@ -1722,7 +1722,7 @@
 #elif ANYCUBIC_PROBE_VERSION == 1
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -19.0 }
 #elif ANYCUBIC_PROBE_VERSION == 3
-  #define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0.80 }  //LujSENSORLESS
+  #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -0.43 }  //LujSENSORLESS
 #else
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0 }
 #endif
