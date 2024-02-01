@@ -606,11 +606,12 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
   // Check to see if the probe was triggered
   const bool probe_triggered =
     #if HAS_DELTA_SENSORLESS_PROBING
-      endstops.trigger_state() & (_BV(X_MIN) | _BV(Y_MIN) | _BV(Z_MIN))
-      //endstops.trigger_state() & (_BV(X_MAX) | _BV(Y_MAX) | _BV(Z_MAX))   //LujSENSORLESS Al unificar las macros que actualizan hit_state ahora:
+      endstops.trigger_state() & (_BV(X_MAX) | _BV(Y_MAX) | _BV(Z_MAX))   //LujSENSORLESS Al unificar las macros que actualizan hit_state con el cambio:
                                                                             //              #_MIN se activan para -direction
                                                                             //              #_MAX se activan para +direction
                                                                             //              Es más intuitivo ahora. Una sonda_Z fisica triggered hacia +direction.
+                                                                            // En esta PR, aún se mantiene #_MAX en DELTA para ambas direcciones. Si usamos #_MIN
+                                                                            // se produce el error "Sondeo Fallado".
     #else
       TEST(endstops.trigger_state(), Z_MIN_PROBE)
     #endif
@@ -950,15 +951,15 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
   void Probe::refresh_largest_sensorless_adj() {
     DEBUG_SECTION(rso, "Probe::refresh_largest_sensorless_adj", true);
     largest_sensorless_adj = -3;  // A reference away from any real probe height
-    if (TEST(endstops.state(), X_MIN)) {   //Lujsensorles   Han cambiado la configuración de los endstop y no funciona PROBING con X_MAX                 
+    if (TEST(endstops.state(), X_MAX)) {   //Lujsensorles   En esta PR aún de activa #_MAX en ambas direcciones de final de carrera.                
       NOLESS(largest_sensorless_adj, offset_sensorless_adj.a);
       DEBUG_ECHOLNPGM("Endstop_X: ", largest_sensorless_adj, " TowerX");
     }
-    if (TEST(endstops.state(), Y_MIN)) {
+    if (TEST(endstops.state(), Y_MAX)) {
       NOLESS(largest_sensorless_adj, offset_sensorless_adj.b);
       DEBUG_ECHOLNPGM("Endstop_Y: ", largest_sensorless_adj, " TowerY");
     }
-    if (TEST(endstops.state(), Z_MIN)) {
+    if (TEST(endstops.state(), Z_MAX)) {
       NOLESS(largest_sensorless_adj, offset_sensorless_adj.c);
       DEBUG_ECHOLNPGM("Endstop_Z: ", largest_sensorless_adj, " TowerZ");
     }

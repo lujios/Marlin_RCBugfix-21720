@@ -1180,12 +1180,12 @@
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#define X_MIN_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
-#define Y_MIN_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
+#define X_MIN_ENDSTOP_INVERTING false  // Set to true to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_INVERTING false  // Set to true to invert the logic of the endstop.
 #if ANYCUBIC_PROBE_VERSION == 1   // V1 is NO, V2 is NC
   #define Z_MIN_ENDSTOP_INVERTING false
 #else
-  #define Z_MIN_ENDSTOP_INVERTING true  //LujENDSTOP_INVERTING
+  #define Z_MIN_ENDSTOP_INVERTING false  //(ANYCUBIC_PROBE_VERSION + 0 == 1) // V1 is NO, V2 is NC   //LujENDSTOP_INVERTING
 #endif
 //#define I_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 //#define J_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -1202,7 +1202,8 @@
 //#define U_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 //#define V_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 //#define W_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define Z_MIN_PROBE_ENDSTOP_INVERTING Z_MIN_ENDSTOP_INVERTING
+//#define Z_MIN_PROBE_ENDSTOP_INVERTING Z_MIN_ENDSTOP_INVERTING      //LujENDSTOP_INVERTING
+#define Z_MIN_PROBE_ENDSTOP_INVERTING true                           //Lujsensorless_probing
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
