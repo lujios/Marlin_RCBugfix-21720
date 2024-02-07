@@ -1722,7 +1722,7 @@
 #elif ANYCUBIC_PROBE_VERSION == 1
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -19.0 }
 #elif ANYCUBIC_PROBE_VERSION == 3
-  #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -0.38 }  //LujSENSORLESS
+  #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -0.35 }  //LujSENSORLESS
 #else
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0 }
 #endif
