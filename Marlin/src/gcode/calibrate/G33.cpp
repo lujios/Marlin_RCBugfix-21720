@@ -70,8 +70,8 @@ enum CalEnum : char {                        // the 7 main calibration points - 
 float lcd_probe_pt(const xy_pos_t &xy);
 
 void ac_home() {
+  TERN_(SENSORLESS_HOMING, endstops.set_homing_current(true)); //Lujsensoless. Igualar código con G28
   endstops.enable(true);
-  TERN_(SENSORLESS_HOMING, endstops.set_homing_current(true));
   home_delta();
   TERN_(SENSORLESS_HOMING, endstops.set_homing_current(false));
   endstops.not_homing();

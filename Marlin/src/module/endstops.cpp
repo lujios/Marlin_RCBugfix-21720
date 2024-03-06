@@ -1689,11 +1689,11 @@ void Endstops::update() {
         #endif
       }
 
-      TERN_(IMPROVE_HOMING_RELIABILITY, planner.enable_stall_prevention(onoff));
-
-      #if SENSORLESS_STALLGUARD_DELAY
-        safe_delay(SENSORLESS_STALLGUARD_DELAY); // Short delay needed to settle
+      #if SENSORLESS_STALLGUARD_DELAY            //Lujsensorless delay antes de planner. Intento de mejorar los falsos finales de carrera.
+        safe_delay(SENSORLESS_STALLGUARD_DELAY); // Short delay needed to settle   
       #endif
+
+      TERN_(IMPROVE_HOMING_RELIABILITY, planner.enable_stall_prevention(onoff));
 
     #endif // XYZ
   }
