@@ -3482,7 +3482,7 @@
    * Step on both rising and falling edge signals (as with a square wave).
    */
   //#define EDGE_STEPPING  //Luj   activo funcionaba SENSORLESS_HOMING pero con DEBUG(LEVELING).
-
+  #define NO_EDGE_STEPPING_WARNING //Luj para evitar warning durante la compilacion si no está activo EDGE_STEPPING
   /**
    * Enable M122 debugging command for TMC stepper drivers.
    * M122 S0/1 will enable continuous reporting.
