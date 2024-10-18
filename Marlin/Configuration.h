@@ -67,7 +67,7 @@
  *
  * Calibration Guides:  https://reprap.org/wiki/Calibration
  *                      https://reprap.org/wiki/Triffid_Hunter%27s_Calibration_Guide
- *                      https://web.archive.org/web/20220907014303/https://sites.google.com/site/repraplogphase/calibration-of-your-reprap
+ *                      https://web.archive.org/web/20220907014303/sites.google.com/site/repraplogphase/calibration-of-your-reprap
  *                      https://youtu.be/wAL9d7FgInk
  *                      https://teachingtechyt.github.io/calibration.html
  *
@@ -123,7 +123,7 @@
 
 /**
  * Select a third serial port on the board to use for communication with the host.
- * Currently only supported for AVR, DUE, LPC1768/9 and STM32/STM32F1
+ * Currently supported for AVR, DUE, SAMD51, LPC1768/9, STM32/STM32F1/HC32, and Teensy 4.x
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
  */
 //#define SERIAL_PORT_3 1
@@ -402,14 +402,15 @@
  *   PRUSA_MMU1           : Průša MMU1 (The "multiplexer" version)
  *   PRUSA_MMU2           : Průša MMU2
  *   PRUSA_MMU2S          : Průša MMU2S (Requires MK3S extruder with motion sensor, EXTRUDERS = 5)
+ *   PRUSA_MMU3           : Průša MMU3  (Requires MK3S extruder with motion sensor and MMU firmware version 3.x.x, EXTRUDERS = 5)
  *   EXTENDABLE_EMU_MMU2  : MMU with configurable number of filaments (ERCF, SMuFF or similar with Průša MMU2 compatible firmware)
  *   EXTENDABLE_EMU_MMU2S : MMUS with configurable number of filaments (ERCF, SMuFF or similar with Průša MMU2 compatible firmware)
  *
  * Requires NOZZLE_PARK_FEATURE to park print head in case MMU unit fails.
  * See additional options in Configuration_adv.h.
- * :["PRUSA_MMU1", "PRUSA_MMU2", "PRUSA_MMU2S", "EXTENDABLE_EMU_MMU2", "EXTENDABLE_EMU_MMU2S"]
+ * :["PRUSA_MMU1", "PRUSA_MMU2", "PRUSA_MMU2S", "PRUSA_MMU3", "EXTENDABLE_EMU_MMU2", "EXTENDABLE_EMU_MMU2S"]
  */
-//#define MMU_MODEL PRUSA_MMU2
+//#define MMU_MODEL PRUSA_MMU3
 
 // @section psu control
 
@@ -737,6 +738,9 @@
  */
 #if ENABLED(MPCTEMP)
   #define MPC_AUTOTUNE                                // Include a method to do MPC auto-tuning (~6.3K bytes of flash)
+  #if ENABLED(MPC_AUTOTUNE)
+    //#define MPC_AUTOTUNE_DEBUG                      // Enable MPC debug logging (~870 bytes of flash)
+  #endif
   //#define MPC_EDIT_MENU                             // Add MPC editing to the "Advanced Settings" menu. (~1.3K bytes of flash)
   //#define MPC_AUTOTUNE_MENU                         // Add MPC auto-tuning to the "Advanced Settings" menu. (~350 bytes of flash)
 
@@ -828,6 +832,40 @@
   //#define BED_LIMIT_SWITCHING   // Keep the bed temperature within BED_HYSTERESIS of the target
 #endif
 
+/**
+ * Peltier Bed - Heating and Cooling
+ *
+ * A Peltier device transfers heat from one side to the other in proportion to the amount of
+ * current flowing through the device and the direction of current flow. So the same device
+ * can both heat and cool.
+ *
+ * When "cooling" in addition to rejecting the heat transferred from the hot side to the cold
+ * side, the dissipated power (voltage * current) must also be rejected. Be sure to set up a
+ * fan that can be powered in sync with the Peltier unit.
+ *
+ * This feature is only set up to run in bang-bang mode because Peltiers don't handle PWM
+ * well without filter circuitry.
+ *
+ * Since existing 3D printers are made to handle relatively high current for the heated bed,
+ * we can use the heated bed power pins to control the Peltier power using the same G-codes
+ * as the heated bed (M140, M190, etc.).
+ *
+ * A second GPIO pin is required to control current direction.
+ * Two configurations are possible: Relay and H-Bridge
+ *
+ * (At this time only relay is supported. H-bridge requires 4 MOS switches configured in H-Bridge.)
+ *
+ * Power is handled by the bang-bang control loop: 0 or 255.
+ * Cooling applications are more common than heating, so the pin states are commonly:
+ *   LOW  = Heating = Relay Energized
+ *   HIGH = Cooling = Relay in "Normal" state
+ */
+//#define PELTIER_BED
+#if ENABLED(PELTIER_BED)
+  #define PELTIER_DIR_PIN           -1  // Relay control pin for Peltier
+  #define PELTIER_DIR_HEAT_STATE   LOW  // The relay pin state that causes the Peltier to heat
+#endif
+
 // Add 'M190 R T' for more gradual M190 R bed cooling.
 //#define BED_ANNEALING_GCODE
 
@@ -868,13 +906,15 @@
   // Lasko "MyHeat Personal Heater" (200w) modified with a Fotek SSR-10DA to control only the heating element
   // and placed inside the small Creality printer enclosure tent.
   //
-  #define DEFAULT_chamberKp 37.04
-  #define DEFAULT_chamberKi 1.40
+  #define DEFAULT_chamberKp  37.04
+  #define DEFAULT_chamberKi   1.40
   #define DEFAULT_chamberKd 655.17
   // M309 P37.04 I1.04 D655.17
 
   // FIND YOUR OWN: "M303 E-2 C8 S50" to run autotune on the chamber at 50 degreesC for 8 cycles.
 #endif // PIDTEMPCHAMBER
+
+// @section pid temp
 
 #if ANY(PIDTEMP, PIDTEMPBED, PIDTEMPCHAMBER)
   //#define PID_DEBUG             // Sends debug data to the serial port. Use 'M303 D' to toggle activation.
@@ -1595,7 +1635,8 @@
  * A lightweight, solenoid-driven probe.
  * For information about this sensor https://github.com/bigtreetech/MicroProbe
  *
- * Also requires: PROBE_ENABLE_DISABLE
+ * Also requires PROBE_ENABLE_DISABLE
+ * With FT_MOTION requires ENDSTOP_INTERRUPTS_FEATURE
  */
 //#define BIQU_MICROPROBE_V1  // Triggers HIGH
 //#define BIQU_MICROPROBE_V2  // Triggers LOW
@@ -1778,6 +1819,7 @@
   #define PROBE_TARE_DELAY 200    // (ms) Delay after tare before
   #define PROBE_TARE_STATE HIGH   // State to write pin for tare
   //#define PROBE_TARE_PIN PA5    // Override default pin
+  //#define PROBE_TARE_MENU       // Display a menu item to tare the probe
   #if ENABLED(PROBE_ACTIVATION_SWITCH)
     //#define PROBE_TARE_ONLY_WHILE_INACTIVE  // Fail to tare/probe if PROBE_ACTIVATION_SWITCH is active
   #endif
@@ -1815,8 +1857,8 @@
  * probe Z Offset set with NOZZLE_TO_PROBE_OFFSET, M851, or the LCD.
  * Only integer values >= 1 are valid here.
  *
- * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
- *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
+ * Example: 'M851 Z-5' with a CLEARANCE of 4  =>  9mm from bed to nozzle.
+ *     But: 'M851 Z+1' with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
 #define Z_CLEARANCE_DEPLOY_PROBE   50 // (mm) Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES  5 // (mm) Z Clearance between probe points
@@ -1870,6 +1912,8 @@
   #define PROBING_NOZZLE_TEMP 120   // (°C) Only applies to E0 at this time
   #define PROBING_BED_TEMP     50
 #endif
+
+// @section stepper drivers
 
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
 // :{ 0:'Low', 1:'High' }
@@ -2044,6 +2088,8 @@
 #endif
 
 /**
+ * @section filament runout sensors
+ *
  * Filament Runout Sensors
  * Mechanical or opto endstops are used to check for the presence of filament.
  *
@@ -2450,6 +2496,9 @@
 // Homing speeds (linear=mm/min, rotational=°/min)
 #define HOMING_FEEDRATE_MM_M { (40*60), (40*60), (40*60) }           //Lujhoming 
 
+// Edit homing feedrates with M210 and MarlinUI menu items
+//#define EDITABLE_HOMING_FEEDRATE
+
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
 
@@ -2585,6 +2634,8 @@
 // @section motion
 
 /**
+ * @section nozzle park
+ *
  * Nozzle Park
  *
  * Park the nozzle at the given XYZ position on idle or G27.
@@ -2607,6 +2658,8 @@
 #endif
 
 /**
+ * @section nozzle clean
+ *
  * Clean Nozzle Feature
  *
  * Adds the G12 command to perform a nozzle cleaning process.
@@ -2767,9 +2820,24 @@
   //#include "Configuration_Secure.h"       // External file with PASSWORD_DEFAULT_VALUE
 #endif
 
-//=============================================================================
-//============================= LCD and SD support ============================
-//=============================================================================
+// @section media
+
+/**
+ * SD CARD
+ *
+ * SD Card support is disabled by default. If your controller has an SD slot,
+ * you must uncomment the following option or it won't work.
+ */
+//#define SDSUPPORT
+
+/**
+ * SD CARD: ENABLE CRC
+ *
+ * Use CRC checks and retries on the SD communication.
+ */
+#if ENABLED(SDSUPPORT)
+  //#define SD_CHECK_AND_RETRY
+#endif
 
 // @section interface
 
@@ -2959,7 +3027,7 @@
 
 //
 // Original RADDS LCD Display+Encoder+SDCardReader
-// https://web.archive.org/web/20200719145306/http://doku.radds.org/dokumentation/lcd-display/
+// https://web.archive.org/web/20200719145306/doku.radds.org/dokumentation/lcd-display/
 //
 //#define RADDS_DISPLAY
 
@@ -3025,7 +3093,7 @@
 
 //
 // Elefu RA Board Control Panel
-// https://web.archive.org/web/20140823033947/http://www.elefu.com/index.php?route=product/product&product_id=53
+// https://web.archive.org/web/20140823033947/www.elefu.com/index.php?route=product/product&product_id=53
 //
 //#define RA_CONTROL_PANEL
 
@@ -3157,7 +3225,7 @@
 
 //
 // Cartesio UI
-// https://web.archive.org/web/20180605050442/http://mauk.cc/webshop/cartesio-shop/electronics/user-interface
+// https://web.archive.org/web/20180605050442/mauk.cc/webshop/cartesio-shop/electronics/user-interface
 //
 //#define CARTESIO_UI
 
@@ -3396,6 +3464,11 @@
 // Touch-screen LCD for Anycubic Vyper
 //
 //#define ANYCUBIC_LCD_VYPER
+
+//
+// Sovol SV-06 Resistive Touch Screen
+//
+//#define SOVOL_SV06_RTS
 
 //
 // 320x240 Nextion 2.8" serial TFT Resistive Touch Screen NX3224T028
