@@ -3278,6 +3278,7 @@
    * Create a 50/50 square wave step pulse optimal for stepper drivers.
    */
   //#define EDGE_STEPPING  //Luj   activo funcionaba SENSORLESS_HOMING pero con DEBUG(LEVELING).
+  #define NO_EDGE_STEPPING_WARNING //Luj para evitar warning durante la compilacion si no está activo EDGE_STEPPING
 
   /**
    * Enable M122 debugging command for TMC stepper drivers.
