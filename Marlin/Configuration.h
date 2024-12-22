@@ -26,16 +26,17 @@
 /**
  * Choose your version:
  */
-// normal size or plus?
+
+// Normal or Plus size?
 //#define ANYCUBIC_KOSSEL_PLUS
 
 // Anycubic Probe version 1 or 2 see README.md; 0 for no probe
 #define ANYCUBIC_PROBE_VERSION 3    //LujSENSORLESS Probe version 3
 
 // Heated Bed:
-// 0 ... no heated bed
-// 1 ... aluminium heated bed with "BuildTak-like" sticker
-// 2 ... ultrabase heated bed
+// 0 ... No heated bed
+// 1 ... Aluminium heated bed with "BuildTak-like" sticker
+// 2 ... Ultrabase heated bed
 #define ANYCUBIC_KOSSEL_ENABLE_BED 1
 
 /**
@@ -140,6 +141,9 @@
   //#define M485_PROTOCOL 1   // Check your host for protocol compatibility
   //#define RS485_BUS_BUFFER_SIZE 128
 #endif
+
+// Enable CAN bus support and protocol
+//#define CAN_MASTER
 
 // Enable the Bluetooth serial interface on AT90USB devices
 //#define BLUETOOTH
@@ -1785,6 +1789,7 @@
 #define PROBING_MARGIN 15
 
 // X and Y axis travel speed (mm/min) between probes
+// Leave undefined to use the average of the current XY homing feedrate.
 #define XY_PROBE_FEEDRATE (60*60)             //Lujprobing
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
@@ -2080,7 +2085,7 @@
 #endif
 
 #if ANY(MIN_SOFTWARE_ENDSTOPS, MAX_SOFTWARE_ENDSTOPS)
-  #define SOFT_ENDSTOPS_MENU_ITEM  // Enable/Disable software endstops from the LCD
+  #define SOFT_ENDSTOPS_MENU_ITEM    // Enable/Disable software endstops from the LCD
 #endif
 
 /**
@@ -3447,14 +3452,14 @@
 //#define ANYCUBIC_LCD_VYPER
 
 //
-// 320x240 Nextion 2.8" serial TFT Resistive Touch Screen NX3224T028
-//
-//#define NEXTION_TFT
-
-//
 // Sovol SV-06 Resistive Touch Screen
 //
 //#define SOVOL_SV06_RTS
+
+//
+// 320x240 Nextion 2.8" serial TFT Resistive Touch Screen NX3224T028
+//
+//#define NEXTION_TFT
 
 //
 // PanelDue touch controller by Escher3D

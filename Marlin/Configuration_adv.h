@@ -213,7 +213,6 @@
 //
 // Heated Chamber options
 //
-
 #if TEMP_SENSOR_CHAMBER
   //#define HEATER_CHAMBER_PIN      P2_04   // Required heater on/off pin (example: SKR 1.4 Turbo HE1 plug)
   //#define HEATER_CHAMBER_INVERTING false
